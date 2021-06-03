@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">kadai3</string>
+    <string name="playButton">再生</string>
+    <string name="stopButton">停止</string>
 </resources>
