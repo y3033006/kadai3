@@ -122,16 +122,14 @@ public class MyMedia {
     }
 
     public void playMusic(){
-        if(checkPrepared.isEmpty()){
-            System.out.println("選択されてなあいです");
-            return;
-        }
         for(int i=0;i<musicPlayer.size();i++){
             if(musicPlayer.get(i).getDuration()!=musicPlayer.get(i).getCurrentPosition()) {
                 musicPlayer.get(i).start();
             }
         }
     }
+
+
 
     public void setSeekTo(int position){
         for (int i = 0; i < musicPlayer.size(); i++) {
@@ -156,6 +154,10 @@ public class MyMedia {
     }
 
     public boolean checkCanPlay(){
+        if(checkPrepared.isEmpty()){
+            System.out.println("選択されてなあいです");
+            return false;
+        }
         for(int i=0; i<checkPrepared.size();i++){
             if(checkPrepared.get(i).equals(false)){
                 return false;

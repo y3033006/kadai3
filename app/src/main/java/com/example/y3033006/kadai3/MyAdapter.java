@@ -3,25 +3,30 @@ package com.example.y3033006.kadai3;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private final String[] listFileName;
+    private List<String> listFileName;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
+        private final CheckBox checkBox;
         public ViewHolder(View view){
             super(view);
             textView = view.findViewById(R.id.musicTitle);
             textView.setTextSize(30);
+            checkBox = view.findViewById(R.id.musicCheckBox);
         }
     }
 
-    public MyAdapter(String[] listFileName){
-        this.listFileName=listFileName;
+    public MyAdapter(List<String > listName){
+        listFileName=listName;
     }
 
     @NonNull
@@ -33,11 +38,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder,int position){
-        holder.textView.setText(listFileName[position]);
+        holder.textView.setText(listFileName.get(position));
     }
 
     @Override
     public  int getItemCount(){
-        return listFileName.length;
+        return listFileName.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

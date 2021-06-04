@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     public RecyclerView recyclerView;
     public RecyclerView.Adapter myAdapter;
-    private String[] mFileName = {"drbpm140.wav","saigetsu.mp3","kamigami.mp3"};
+    private List<String> mFileName;
     private List<Integer> mCurrentPosition;
 
 
@@ -41,15 +41,26 @@ public class MainActivity extends AppCompatActivity {
 
         myMedia = new MyMedia();
 
-        for (String s : mFileName) {
-            myMedia.selectedMusic(s, getApplicationContext());
-        }
-
         recyclerView=findViewById(R.id.list);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager((layoutManager));
+        mFileName = new ArrayList<>();
+        mFileName.add("drbpm140.wav");
+        mFileName.add("kamigami.mp3");
+        mFileName.add("saigetsu.mp3");
+        mFileName.add("drbpm140.wav");
+        mFileName.add("kamigami.mp3");
+        mFileName.add("saigetsu.mp3");
+        mFileName.add("drbpm140.wav");
+        mFileName.add("kamigami.mp3");
+        mFileName.add("saigetsu.mp3");
+        System.out.println(mFileName);
         myAdapter = new MyAdapter(mFileName);
         recyclerView.setAdapter(myAdapter);
+
+        /*for (int i=0;i<mFileName.size();i++) {
+            myMedia.selectedMusic(mFileName.get(i), getApplicationContext());
+        }*/
 
         mCurrentPosition = new ArrayList<>();
 
@@ -143,6 +154,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause(){
         super.onPause();
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
     }
 
     @Override
