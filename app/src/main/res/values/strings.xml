@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">kadai3</string>
     <string name="playButton">再生</string>
-    <string name="stopButton">停止</string>
+    <string name="stopButton">一時停止</string>
+    <string name="rewindButton">returnButton</string>
+    <string name="skipButton">putButton</string>
+    <string name="startPauseButton">startPauseButton</string>
 </resources>

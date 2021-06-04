@@ -4,113 +4,171 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.res.AssetFileDescriptor;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.widget.Button;
+import android.os.Handler;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity {
-    private List<MediaPlayer> musicPlayer;
-    int preparedNum;
-    private List<Boolean> checkPrepared;
+    private MyMedia myMedia;
+
+    public RecyclerView recyclerView;
+    public RecyclerView.Adapter myAdapter;
+    private String[] mFileName = {"drbpm140.wav","saigetsu.mp3","kamigami.mp3"};
+    private List<Integer> mCurrentPosition;
+
+
+    private SeekBar musicBar;
+    //Threadが1系統しか生まれないようにするための判定変数
+    private Boolean checkBarThread;
+    //Threadを更新するかの判定変数
+    private Boolean checkUpdateTread;
+    //SeekBarのつまみを触った時に音楽が再生中だったかを入れる変数、trueで再生中だった
+    private Boolean checkBarPlay;
+
+
+    private ImageButton startPause;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.list);
+        myMedia = new MyMedia();
+
+        for (String s : mFileName) {
+            myMedia.selectedMusic(s, getApplicationContext());
+        }
+
+        recyclerView=findViewById(R.id.list);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager((layoutManager));
-        String[] myDataset = {"drbpm140.wav","saigetsu.mp3","kamigami.mp3","aaa","kkkk"};
-        RecyclerView.Adapter myAdapter = new MyAdapter(myDataset);
+        myAdapter = new MyAdapter(mFileName);
         recyclerView.setAdapter(myAdapter);
 
-        musicPlayer = new ArrayList<>();
-        preparedNum=0;
-        checkPrepared = new ArrayList<>();
-        selectedMusic("drbpm140.wav");
-        selectedMusic("saigetsu.mp3");
-        System.out.println("set_"+checkPrepared);
+        mCurrentPosition = new ArrayList<>();
 
-        Button play =findViewById(R.id.playButton);
+        musicBar = findViewById((R.id.musicBar));
+        checkBarPlay=false;
 
-        play.setOnClickListener(v -> playMusic());
-
-        Button stop =findViewById(R.id.stopButton);
-
-        stop.setOnClickListener(v -> pauseMusic());
-    }
-
-    private void selectedMusic(String name){
-        checkPrepared.add(false);
-        MediaPlayer player = new MediaPlayer();
-        try{
-            AssetFileDescriptor assetFileDescriptor = getAssets().openFd(name);
-            player.setDataSource(assetFileDescriptor.getFileDescriptor(),assetFileDescriptor.getStartOffset(),assetFileDescriptor.getLength());
-            assetFileDescriptor.close();
-        }catch(IllegalArgumentException e){
-            e.printStackTrace();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        musicPlayer.add(player);
-        int indexNum = musicPlayer.indexOf(player);
-        musicPlayer.get(indexNum).setOnPreparedListener(mp -> checkPrepared.set(indexNum,true));
-        musicPlayer.get(indexNum).prepareAsync();
-    }
-
-    private void playMusic(){
-        if(checkPrepared.isEmpty()){
-            System.out.println("選択されてなあいです");
-            return;
-        }
-        if(!checkCanPlay()){
-            System.out.println(("読み込み中です"));
-            return;
-        }
-        for(int i=0;i<musicPlayer.size();i++){
-            musicPlayer.get(i).start();
-        }
-    }
-
-    private boolean checkCanPlay(){
-        System.out.println("check_"+checkPrepared);
-        for(int i=0; i<checkPrepared.size();i++){
-            if(checkPrepared.get(i).equals(false)){
-                return false;
+        musicBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             }
-        }
-        return true;
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                if(myMedia.checkIsPlayingAll()) {
+                    myMedia.pauseMusic();
+                    checkUpdateTread = false;
+                    checkBarPlay=true;
+                }
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                System.out.println(musicBar.getProgress());
+                myMedia.setSeekTo(musicBar.getProgress());
+                if(checkBarPlay) {
+                    myMedia.playMusic();
+                    makeBarThread();
+                    checkBarPlay=false;
+                }
+            }
+        });
+
+        checkBarThread = false;
+        checkUpdateTread = false;
+
+        startPause=findViewById(R.id.startPause);
+
+        startPause.setOnClickListener(v -> {
+            if(myMedia.checkIsPlayingAll()){
+                myMedia.pauseMusic();
+                checkUpdateTread=false;
+                startPause.setImageResource(android.R.drawable.ic_media_play);
+            } else if(myMedia.checkCanPlay()){
+                myMedia.playMusic();
+                musicBar.setMax(myMedia.getIndex0Duration());
+                makeBarThread();
+                startPause.setImageResource(android.R.drawable.ic_media_pause);
+            }else{
+                System.out.println("読み込み中");
+            }
+        });
+
+        ImageButton skipButton = findViewById(R.id.skip15s);
+        skipButton.setOnClickListener(v-> {
+            myMedia.skipMusic();
+            musicBar.setProgress(myMedia.getIndexCurrentPosition(0));
+        });
+
+        ImageButton rewindButton = findViewById(R.id.rewind15s);
+        rewindButton.setOnClickListener(v-> {
+            myMedia.rewindMusic();
+            musicBar.setProgress(myMedia.getIndexCurrentPosition(0));
+        });
     }
 
-    private void stopMusic(){
-        while(musicPlayer.size()>0) {
-            musicPlayer.get(0).stop();
-            musicPlayer.get(0).release();
-            musicPlayer.remove(0);
-        }
-    }
-
-    private void pauseMusic(){
-        for(int i=0;i<musicPlayer.size();i++){
-            musicPlayer.get(i).pause();
+    private void makeBarThread(){
+        if(!checkBarThread) {
+            checkBarThread = true;
+            checkUpdateTread=true;
+            Handler handler = new Handler();
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (checkUpdateTread) {
+                        int currentPosition = myMedia.getIndexCurrentPosition(0);
+                        musicBar.setProgress(currentPosition);
+                        handler.postDelayed(this, 1000);
+                    } else{
+                        checkBarThread=false;
+                    }
+                }
+            });
         }
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        stopMusic();
+    }
+
+    @Override
+    protected void onStop(){
+        int index=0;
+        while(!myMedia.isCheckSize(index)){
+            System.out.println(index);
+            mCurrentPosition.add(myMedia.getIndexCurrentPosition(index));
+            index=index+1;
+        }
+        myMedia.stopMusic();
+        checkUpdateTread=false;
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        for (String s : mFileName) {
+            myMedia.reCreateMusic(s, getApplicationContext());
+        }
+        int index =0;
+        while(!myMedia.isCheckSize(index)){
+            myMedia.playMusicRestart(mCurrentPosition);
+            index++;
+        }
+
     }
 }

@@ -1,8 +1,11 @@
 package com.example.y3033006.kadai3;
 //参考：https://www.shookuro.com/entry/android-recycler-view
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -10,9 +13,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
-        public ViewHolder(TextView view){
+        public ViewHolder(View view){
             super(view);
-            textView = view;
+            textView = view.findViewById(R.id.musicTitle);
             textView.setTextSize(30);
         }
     }
@@ -21,9 +24,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         this.listFileName=listFileName;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
-        TextView v = new TextView(parent.getContext());
+    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
+        View v =LayoutInflater.from(parent.getContext()).inflate(R.layout.list,parent,false);
         return new ViewHolder(v);
     }
 
