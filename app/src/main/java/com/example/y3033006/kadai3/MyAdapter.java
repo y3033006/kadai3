@@ -1,6 +1,5 @@
 package com.example.y3033006.kadai3;
 //参考：https://www.shookuro.com/entry/android-recycler-view
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+//RecyclerView.Adapterを継承したRecyclerViewのAdapterクラス
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+    //表示する文字列のリスト
     private final List<String> listFileName;
+    //チェックボックスにチェックが入ってるものを記憶するリスト、positionを記憶
     public List<Integer> selectedFile;
 
+    //スライドするやつの本体
     static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
         private final CheckBox checkBox;
 
+        //layoutのlist.xmlからlayout情報取得
         public ViewHolder(View view){
             super(view);
             textView = view.findViewById(R.id.musicTitle);
@@ -27,20 +31,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             checkBox = view.findViewById(R.id.musicCheckBox);
         }
 
+        //CheckBoxで使うやつ
         void bind(List<Integer> selectedFile){
+            //チェックが切り換えられると呼び出される
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                System.out.println("SSS"+getLayoutPosition());
+                //そのチェックボックスのposition番号が記憶されてるか確認、あったらチェックを消した動作
                 if(selectedFile.contains(getLayoutPosition())){
+                    //番号を削除
                     selectedFile.remove((Integer) getLayoutPosition());
+                //position番号がなかったらチェックを入れる動作
                 }else{
+                    //番号を追加
                     selectedFile.add(getLayoutPosition());
                 }
-                System.out.println(selectedFile);
             });
         }
 
     }
 
+    //コンストラクタ
     public MyAdapter(List<String > listName,List<Integer> listSelected){
         selectedFile=listSelected;
         listFileName=listName;
@@ -55,9 +64,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position){
+        //絶対パス化の簡易的な判別で絶対パスと判断されたら
         if(listFileName.get(position).contains("/")){
+            //絶対パスからそのファイルの名前だけに切り取り表示させる
             holder.textView.setText(listFileName.get(position).substring(listFileName.get(position).lastIndexOf("/")+1));
+        //絶対パスではなかったら
         }else {
+            //そのままを表示させる
             holder.textView.setText(listFileName.get(position));
         }
         holder.bind(selectedFile);
