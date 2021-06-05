@@ -5,4 +5,5 @@
     <string name="rewindButton">returnButton</string>
     <string name="skipButton">putButton</string>
     <string name="startPauseButton">startPauseButton</string>
+    <string name="decisionButton">曲決定</string>
 </resources>

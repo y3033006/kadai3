@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public RecyclerView.Adapter myAdapter;
     private List<String> mFileName;
+    private List<Integer> mSelectedFile;
     private List<Integer> mCurrentPosition;
 
 
@@ -33,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton startPause;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,22 +46,13 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager((layoutManager));
         mFileName = new ArrayList<>();
-        mFileName.add("drbpm140.wav");
-        mFileName.add("kamigami.mp3");
-        mFileName.add("saigetsu.mp3");
-        mFileName.add("drbpm140.wav");
-        mFileName.add("kamigami.mp3");
-        mFileName.add("saigetsu.mp3");
+        mSelectedFile = new ArrayList<>();
         mFileName.add("drbpm140.wav");
         mFileName.add("kamigami.mp3");
         mFileName.add("saigetsu.mp3");
         System.out.println(mFileName);
-        myAdapter = new MyAdapter(mFileName);
+        myAdapter = new MyAdapter(mFileName,mSelectedFile);
         recyclerView.setAdapter(myAdapter);
-
-        /*for (int i=0;i<mFileName.size();i++) {
-            myMedia.selectedMusic(mFileName.get(i), getApplicationContext());
-        }*/
 
         mCurrentPosition = new ArrayList<>();
 
@@ -109,20 +101,42 @@ public class MainActivity extends AppCompatActivity {
                 makeBarThread();
                 startPause.setImageResource(android.R.drawable.ic_media_pause);
             }else{
-                System.out.println("読み込み中");
+                //mFileName.add("saigetsu.mp3");
+                //myAdapter.notifyItemInserted(mFileName.lastIndexOf("saigetsu.mp3"));
+                //myAdapter.notifyDataSetChanged();
+                System.out.println("読み込み中"+mSelectedFile);
             }
         });
 
+        Button decisionMusicButton = findViewById(R.id.decisionMusicButton);
+        decisionMusicButton.setOnClickListener(v -> {
+            if(myMedia.checkIsPlayingAll()){
+                myMedia.pauseMusic();
+                checkUpdateTread=false;
+                startPause.setImageResource(android.R.drawable.ic_media_play);
+            }
+            musicBar.setProgress(0);
+            myMedia.releaseAll();
+            for(int i=0;i<mSelectedFile.size();i++){
+                myMedia.selectedMusic(mFileName.get(mSelectedFile.get(i)), getApplicationContext());
+            }
+            System.out.println("MainActivity120");
+            myMedia.printList();
+        });
         ImageButton skipButton = findViewById(R.id.skip15s);
         skipButton.setOnClickListener(v-> {
             myMedia.skipMusic();
-            musicBar.setProgress(myMedia.getIndexCurrentPosition(0));
+            if(!myMedia.isListNull()) {
+                musicBar.setProgress(myMedia.getIndexCurrentPosition(0));
+            }
         });
 
         ImageButton rewindButton = findViewById(R.id.rewind15s);
         rewindButton.setOnClickListener(v-> {
             myMedia.rewindMusic();
-            musicBar.setProgress(myMedia.getIndexCurrentPosition(0));
+            if(!myMedia.isListNull()) {
+                musicBar.setProgress(myMedia.getIndexCurrentPosition(0));
+            }
         });
     }
 

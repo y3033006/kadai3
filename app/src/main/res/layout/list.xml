@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="200dp"
-    android:paddingLeft="200dp"
+    android:paddingStart="120dp"
+    android:paddingLeft="120dp"
     tools:ignore="RtlSymmetry">
 
     <TextView

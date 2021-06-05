@@ -8,8 +8,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
-        android:layout_width="731dp"
-        android:layout_height="161dp"
+        android:layout_width="508dp"
+        android:layout_height="154dp"
         android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
@@ -20,19 +20,19 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="MissingConstraints,RtlSymmetry"
+        android:background="@color/gray"
         android:paddingStart="12dp"
         android:paddingLeft="12dp"
         android:paddingTop="6dp"
-        android:background="@color/gray">
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="MissingConstraints,RtlSymmetry">
 
         <ImageButton
             android:id="@+id/rewind15s"
             android:layout_width="47dp"
             android:layout_height="47dp"
-            app:srcCompat="@android:drawable/ic_media_rew"
-            android:contentDescription="@string/rewindButton" />
+            android:contentDescription="@string/rewindButton"
+            app:srcCompat="@android:drawable/ic_media_rew" />
 
         <ImageButton
             android:id="@+id/startPause"
@@ -60,9 +60,20 @@
             android:id="@+id/skip15s"
             android:layout_width="47dp"
             android:layout_height="47dp"
-            app:srcCompat="@android:drawable/ic_media_ff"
-            android:contentDescription="@string/skipButton" />
+            android:contentDescription="@string/skipButton"
+            app:srcCompat="@android:drawable/ic_media_ff" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/decisionMusicButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginBottom="62dp"
+        android:text="@string/decisionButton"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintStart_toEndOf="@+id/list" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

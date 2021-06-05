@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyMedia {
-    private List<MediaPlayer> musicPlayer;
-    private List<Boolean> checkPrepared;
+    private final List<MediaPlayer> musicPlayer;
+    private final List<Boolean> checkPrepared;
 
     public MyMedia(){
         musicPlayer = new ArrayList<>();
@@ -129,15 +129,9 @@ public class MyMedia {
         }
     }
 
-
-
     public void setSeekTo(int position){
         for (int i = 0; i < musicPlayer.size(); i++) {
-            if(musicPlayer.get(i).getDuration() <=position){
-                musicPlayer.get(i).seekTo(musicPlayer.get(i).getDuration());
-            }else{
-                musicPlayer.get(i).seekTo(position);
-            }
+            musicPlayer.get(i).seekTo(Math.min(musicPlayer.get(i).getDuration(), position));
             System.out.println("seek"+i+":"+musicPlayer.get(i).getCurrentPosition());
         }
 
@@ -166,11 +160,27 @@ public class MyMedia {
         return true;
     }
 
+    public boolean isListNull(){
+        if(!checkPrepared.isEmpty()){
+            System.out.println("選択されてなあいです");
+            return false;
+        }else {
+            return true;
+        }
+    }
+
     public void stopMusic(){
         while(musicPlayer.size()>0) {
             musicPlayer.get(0).stop();
+        }
+        releaseAll();
+    }
+
+    public void releaseAll(){
+        while(musicPlayer.size()>0){
             musicPlayer.get(0).release();
             musicPlayer.remove(0);
+            checkPrepared.remove(0);
         }
     }
 
