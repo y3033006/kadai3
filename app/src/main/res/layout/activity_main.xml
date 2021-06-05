@@ -13,8 +13,8 @@
         android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -25,6 +25,7 @@
         android:paddingLeft="12dp"
         android:paddingTop="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints,RtlSymmetry">
 
         <ImageButton
@@ -68,12 +69,32 @@
         android:id="@+id/decisionMusicButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginBottom="62dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginBottom="60dp"
         android:text="@string/decisionButton"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintStart_toEndOf="@+id/list" />
+
+    <Spinner
+        android:id="@+id/downloadSpinner"
+        android:layout_width="508dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/list"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/loadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginBottom="68dp"
+        android:text="@string/loadButton"
+        app:layout_constraintBottom_toTopOf="@+id/decisionMusicButton"
+        app:layout_constraintStart_toEndOf="@+id/downloadSpinner" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

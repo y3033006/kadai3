@@ -6,4 +6,5 @@
     <string name="skipButton">putButton</string>
     <string name="startPauseButton">startPauseButton</string>
     <string name="decisionButton">曲決定</string>
+    <string name="loadButton">曲追加</string>
 </resources>

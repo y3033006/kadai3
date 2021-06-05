@@ -1,5 +1,6 @@
 package com.example.y3033006.kadai3;
 //参考：https://www.shookuro.com/entry/android-recycler-view
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +30,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         void bind(List<Integer> selectedFile){
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 System.out.println("SSS"+getLayoutPosition());
-                if(selectedFile.contains(getAdapterPosition())){
-                    selectedFile.remove((Integer) getAdapterPosition());
+                if(selectedFile.contains(getLayoutPosition())){
+                    selectedFile.remove((Integer) getLayoutPosition());
                 }else{
                     selectedFile.add(getLayoutPosition());
                 }
@@ -53,8 +54,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder,int position){
-        holder.textView.setText(listFileName.get(position));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position){
+        if(listFileName.get(position).contains("/")){
+            holder.textView.setText(listFileName.get(position).substring(listFileName.get(position).lastIndexOf("/")+1));
+        }else {
+            holder.textView.setText(listFileName.get(position));
+        }
         holder.bind(selectedFile);
     }
 

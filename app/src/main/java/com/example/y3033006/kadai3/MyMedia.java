@@ -75,6 +75,25 @@ public class MyMedia {
         musicPlayer.get(indexNum).prepareAsync();
     }
 
+    public void selectedMusicPass(String path){
+        checkPrepared.add(false);
+        MediaPlayer player = new MediaPlayer();
+        try{
+            player.setDataSource(path);
+        }catch(IllegalArgumentException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        musicPlayer.add(player);
+        int indexNum = musicPlayer.indexOf(player);
+        musicPlayer.get(indexNum).setOnPreparedListener(mp -> {
+            checkPrepared.set(indexNum,true);
+            sortList(indexNum);
+            printList();
+        });
+        musicPlayer.get(indexNum).prepareAsync();
+    }
     public void reCreateMusic(String name,Context context){
         checkPrepared.add(true);
         MediaPlayer player = new MediaPlayer();
